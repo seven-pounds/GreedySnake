@@ -1,4 +1,6 @@
-package com.example.greedysnake;
+package com.example.greedysnake.entity;
+
+import com.example.greedysnake.entity.Snake;
 
 /**
  * @author jzfan

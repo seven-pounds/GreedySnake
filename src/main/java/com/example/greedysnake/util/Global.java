@@ -20,15 +20,6 @@ public class Global {
      */
     public static final int count = WIDTH * HEIGHT;
 
-    /**
-     * 游戏时间
-     */
-    public static int min = 15;
-
-    /**
-     * 游戏次数
-     */
-    public static int gameTimes = 0;
 
     public static int getWIDTH() {
         return WIDTH;
@@ -46,19 +37,4 @@ public class Global {
         Global.HEIGHT = HEIGHT;
     }
 
-    public static int getMin() {
-        return min;
-    }
-
-    public static void setMin(int min) {
-        Global.min = min;
-    }
-
-    public static int getGameTimes() {
-        return gameTimes;
-    }
-
-    public static void setGameTimes(int gameTimes) {
-        Global.gameTimes = gameTimes;
-    }
 }

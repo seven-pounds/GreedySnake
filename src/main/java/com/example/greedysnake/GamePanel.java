@@ -1,5 +1,8 @@
 package com.example.greedysnake;
 
+import com.example.greedysnake.entity.Apple;
+import com.example.greedysnake.entity.Ground;
+import com.example.greedysnake.entity.Snake;
 import com.example.greedysnake.util.Global;
 
 import javax.swing.*;
@@ -7,17 +10,17 @@ import java.awt.*;
 
 /**
  * @author jzfan
- */ //游戏的显示界面
+ */
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
 
     private Snake snake;
-    private Food food;
+    private Apple apple;
     private Ground ground;
     //显示画面
-    public void display(Snake snake, Food food, Ground ground) {
+    public void display(Snake snake, Apple apple, Ground ground) {
         this.snake = snake;
-        this.food = food;
+        this.apple = apple;
         this.ground = ground;
         //会重新显示，此方法会调用下面的方法
         this.repaint();
@@ -29,10 +32,10 @@ public class GamePanel extends JPanel {
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(0, 0, Global.WIDTH * Global.CELL_SIZE,
                 Global.HEIGHT * Global.CELL_SIZE);
-        if(ground != null && snake != null && food != null ) {
+        if(ground != null && snake != null && apple != null ) {
             this.ground.drawMe(g);
             this.snake.drawMe(g);
-            this.food.drawMe(g);
+            this.apple.drawMe(g);
         }
 
     }

@@ -1,4 +1,4 @@
-package com.example.greedysnake;
+package com.example.greedysnake.entity;
 
 import com.example.greedysnake.util.Global;
 
@@ -7,15 +7,15 @@ import java.awt.*;
 /**
  * @author jzfan
  */
-public class Food extends Point{
+public class Apple extends Point implements Food{
     Point point = null;
     //设置食物位置坐标
-    public void newFood(Point p) {
+    public void newApple(Point p) {
         this.point = p;
         this.setLocation(p);
     }
     //判断蛇是否吃到食物
-    public boolean isSnakeEatFood(Snake snake) {
+    public boolean isSnakeEatApple(Snake snake) {
         return this.equals(snake.getHead());
     }
     //显示食物

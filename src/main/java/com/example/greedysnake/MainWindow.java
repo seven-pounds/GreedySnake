@@ -6,10 +6,13 @@ package com.example.greedysnake;
  * 在设计中，除了让GamePanel获得焦点，其他组件都不能获得焦点。
  */
 
+import com.example.greedysnake.controller.Controller;
+import com.example.greedysnake.entity.Apple;
+import com.example.greedysnake.entity.Ground;
+import com.example.greedysnake.entity.Snake;
 import com.example.greedysnake.util.Global;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -18,6 +21,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
 
@@ -26,12 +30,14 @@ public class MainWindow extends JFrame {
     private JPanel contentPane;
 
     Snake snake = new Snake();
-    Food food = new Food();
+    Apple apple = new Apple();
     Ground ground = new Ground();
     public JTextField gameTime;
+    private JTextField lifeTimes;
+    private JTextField timeCountDown;
 
     GamePanel gamePanel = new GamePanel();
-    Controller controller = new Controller(snake, food, ground, gamePanel);
+    Controller controller = new Controller(snake, apple, ground, gamePanel);
 
     public MainWindow() {
         setResizable(false);
@@ -102,11 +108,7 @@ public class MainWindow extends JFrame {
         panel_control.setFocusable(false);
         panel_control.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 
-        // 游戏控制面板
-        JPanel panel_set = new JPanel();
-        panel_set.setFocusable(false);
 
-        // 游戏时间设置面板
         JPanel panel_display = new JPanel();
         panel_display.setFocusable(false);
         panel_display.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -114,12 +116,9 @@ public class MainWindow extends JFrame {
         gl_panel_1.setHorizontalGroup(
                 gl_panel_1.createParallelGroup(Alignment.LEADING)
                         .addGroup(gl_panel_1.createSequentialGroup()
-                                .addComponent(panel_set, GroupLayout.PREFERRED_SIZE,
-                                        302, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
-                                        .addComponent(panel_display, GroupLayout.PREFERRED_SIZE,
-                                                216, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(panel_display, 0, 0, Short.MAX_VALUE)
                                         .addComponent(panel_control, 0, 0, Short.MAX_VALUE))
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addComponent(lable, GroupLayout.PREFERRED_SIZE,
@@ -130,11 +129,9 @@ public class MainWindow extends JFrame {
                 gl_panel_1.createParallelGroup(Alignment.TRAILING)
                         .addGroup(gl_panel_1.createSequentialGroup()
                                 .addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(panel_set,
-                                                GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
                                         .addGroup(gl_panel_1.createSequentialGroup()
                                                 .addComponent(panel_display,
-                                                        GroupLayout.PREFERRED_SIZE, 123, GroupLayout.PREFERRED_SIZE)
+                                                        GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
                                                 .addPreferredGap(ComponentPlacement.RELATED)
                                                 .addComponent(panel_control,
                                                         GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE))
@@ -142,30 +139,56 @@ public class MainWindow extends JFrame {
                                 .addContainerGap())
         );
 
-        JLabel timeLabel = new JLabel("set game time");
-        timeLabel.setFocusable(false);
-        timeLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        timeLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-        timeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel gimeTimeLabel = new JLabel("please set game time");
+        gimeTimeLabel.setFocusable(false);
+        gimeTimeLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        gimeTimeLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+        gimeTimeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
         gameTime = new JTextField();
         gameTime.setText("15");
+        // 游戏开始前可以修改时间
         gameTime.setEditable(true);
-        gameTime.setFocusable(false);
+        gameTime.setFocusable(true);
         gameTime.setColumns(10);
 
+        JLabel timeCountDownLabel = new JLabel("time count down");
+        timeCountDownLabel.setFocusable(false);
 
+        timeCountDown = new JTextField();
+        timeCountDown.setText(controller.gameTimeSecond + "/s");
+        timeCountDown.setEditable(false);
+        timeCountDown.setFocusable(false);
+        timeCountDown.setColumns(10);
+
+        JLabel lifeTimesLabel = new JLabel("life times");
+        lifeTimesLabel.setFocusable(false);
+
+        lifeTimes = new JTextField();
+        lifeTimes.setText(3 + " 次 ");
+        lifeTimes.setEditable(false);
+        lifeTimes.setFocusable(false);
+        gimeTimeLabel.setLabelFor(lifeTimes);
+        lifeTimes.setColumns(10);
         GroupLayout gl_panel_display = new GroupLayout(panel_display);
         gl_panel_display.setHorizontalGroup(
                 gl_panel_display.createParallelGroup(Alignment.LEADING)
                         .addGroup(gl_panel_display.createSequentialGroup()
-                                .addGap(6)
+                                .addGap(5)
                                 .addGroup(gl_panel_display.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(timeLabel,
-                                                GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(gimeTimeLabel,
+                                                0, 0, Short.MAX_VALUE)
+                                        .addComponent(timeCountDownLabel,
+                                                0, 0, Short.MAX_VALUE)
+                                        .addComponent(lifeTimesLabel,
+                                                0, 0, Short.MAX_VALUE))
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(gl_panel_display.createParallelGroup(Alignment.LEADING, false)
+                                        .addComponent(timeCountDown,
+                                                GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                                        .addComponent(lifeTimes,
+                                                GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
                                         .addComponent(gameTime))
                                 .addContainerGap(26, Short.MAX_VALUE))
         );
@@ -178,98 +201,82 @@ public class MainWindow extends JFrame {
                                                 .addComponent(gameTime, GroupLayout.PREFERRED_SIZE,
                                                         21, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(ComponentPlacement.UNRELATED)
+                                                .addComponent(timeCountDown, GroupLayout.PREFERRED_SIZE,
+                                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(lifeTimes, GroupLayout.PREFERRED_SIZE,
+                                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(16))
                                         .addGroup(gl_panel_display.createSequentialGroup()
-                                                .addComponent(timeLabel, GroupLayout.PREFERRED_SIZE,
+                                                .addComponent(gimeTimeLabel, GroupLayout.PREFERRED_SIZE,
                                                         18, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(ComponentPlacement.UNRELATED)
+                                                .addComponent(timeCountDownLabel, GroupLayout.PREFERRED_SIZE,
+                                                        25, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(lifeTimesLabel)
                                                 .addGap(21))))
         );
         panel_display.setLayout(gl_panel_display);
 
 
 
-        GroupLayout gl_panel_set = new GroupLayout(panel_set);
-        gl_panel_set.setHorizontalGroup(
-                gl_panel_set.createParallelGroup(Alignment.LEADING)
-                        .addGroup(gl_panel_set.createSequentialGroup()
-                                .addGroup(gl_panel_set.createParallelGroup(Alignment.LEADING, false)
-                                        .addGroup(gl_panel_set.createSequentialGroup()
-                                                .addGap(10))
-                                        .addGroup(gl_panel_set.createSequentialGroup()
-                                                .addGap(20)
-                                                .addPreferredGap(ComponentPlacement.UNRELATED))
-                                        .addGroup(gl_panel_set.createSequentialGroup()
-                                                .addGap(20))
-                                        .addGroup(gl_panel_set.createSequentialGroup()
-                                                .addGap(20))
-                                        .addGroup(gl_panel_set.createSequentialGroup()
-                                                .addGap(14))
-                                        .addGroup(gl_panel_set.createSequentialGroup()
-                                                .addContainerGap()))
-                                .addGap(10))
-                        .addGroup(gl_panel_set.createSequentialGroup()
-                                .addContainerGap()
-                                .addContainerGap())
-        );
-        gl_panel_set.setVerticalGroup(
-                gl_panel_set.createParallelGroup(Alignment.LEADING)
-                        .addGroup(gl_panel_set.createSequentialGroup()
-                                .addGap(10)
-                                .addGap(10)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addGroup(gl_panel_set.createParallelGroup(Alignment.BASELINE))
-                                .addGap(12)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addGap(12)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addGap(14))
-        );
 
-
-        panel_set.setLayout(gl_panel_set);
-
-        JButton button_pause = new JButton("pause");
+        JButton button_pause = new JButton("start/pause/continue");
         button_pause.setFocusable(false);
         button_pause.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(gameTime.isEditable()){
-                    // get value from text field and check if it is a number
-                    try {
-                        int time = Integer.parseInt(gameTime.getText());
-                        gameTime.setEditable(false);
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "Please enter a number");
+                // get value from gameTime and check if it is a number
+                String gameTimeStr = gameTime.getText();
+                if (gameTimeStr.matches("[0-9]+")) {
+                    int min = Integer.parseInt(gameTimeStr) ;
+                    if(min>20){
+                        JOptionPane.showMessageDialog(null,
+                                "please input a number less than 20 for game time");
+                        return;
                     }
+                    controller.setGameTimeSecond(min * 60);
+                    timeCountDown.setText(controller.getGameTimeSecond() + "/s");
+                    // 游戏开始后不可以修改时间
+                    gameTime.setEditable(false);
+                    gameTime.setFocusable(false);
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "please input a number for game time");
+                    return;
                 }
                 snake.changePause();
             }
         });
         button_pause.setFocusPainted(false);
 
-        JButton button_newGame = new JButton("new");
+        JButton button_newGame = new JButton("new game");
         button_newGame.setFocusable(false);
         button_newGame.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 controller.newGame();
-
+                // 更新面板
+                gameTime.setEditable(true);
+                gameTime.setFocusable(true);
+                lifeTimes.setText(3 + "/times");
+                controller.setGameTimeSecond(0);
+                timeCountDown.setText(controller.getGameTimeSecond() + "/s");
             }
         });
         button_newGame.setFocusPainted(false);
+
         GroupLayout gl_panel_control = new GroupLayout(panel_control);
         gl_panel_control.setHorizontalGroup(
-                gl_panel_control.createParallelGroup(Alignment.TRAILING)
+                gl_panel_control.createParallelGroup(Alignment.LEADING)
                         .addGroup(gl_panel_control.createSequentialGroup()
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap()
                                 .addComponent(button_newGame, GroupLayout.PREFERRED_SIZE,
-                                        95, GroupLayout.PREFERRED_SIZE)
+                                        150, GroupLayout.PREFERRED_SIZE)
                                 .addGap(3)
                                 .addComponent(button_pause, GroupLayout.PREFERRED_SIZE,
-                                        94, GroupLayout.PREFERRED_SIZE)
+                                        150, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
         );
         gl_panel_control.setVerticalGroup(
@@ -280,20 +287,21 @@ public class MainWindow extends JFrame {
                                         .addComponent(button_newGame, GroupLayout.PREFERRED_SIZE,
                                                 44, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(button_pause, GroupLayout.PREFERRED_SIZE,
-                                                44, GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(18, Short.MAX_VALUE))
+                                                44, GroupLayout.PREFERRED_SIZE)
+                                )
+                                .addContainerGap(800, Short.MAX_VALUE))
         );
         panel_control.setLayout(gl_panel_control);
 
-        JLabel illustration = new JLabel("illustration");
-        illustration.setFocusable(false);
-        illustration.setHorizontalAlignment(SwingConstants.CENTER);
-        illustration.setHorizontalTextPosition(SwingConstants.CENTER);
+        JLabel lblNewLabel = new JLabel("illustration");
+        lblNewLabel.setFocusable(false);
+        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNewLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 
         JLabel label = new JLabel("direction key: up, down, left, right");
         label.setFocusable(false);
 
-        JLabel label_1 = new JLabel("space key: start/pause");
+        JLabel label_1 = new JLabel("space key: start/pause/continue");
         label_1.setFocusable(false);
 
         JLabel lblShift = new JLabel("Shift key: new game");
@@ -305,15 +313,13 @@ public class MainWindow extends JFrame {
                 gl_lable.createParallelGroup(Alignment.TRAILING)
                         .addGroup(gl_lable.createSequentialGroup()
                                 .addGroup(gl_lable.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(illustration, GroupLayout.PREFERRED_SIZE,
-                                                71, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE,
+                                                250, GroupLayout.PREFERRED_SIZE)
                                         .addGroup(gl_lable.createSequentialGroup()
-                                                .addGap(26)
+                                                .addGap(5)
                                                 .addGroup(gl_lable.createParallelGroup(Alignment.LEADING)
-                                                        .addComponent(label_1,
-                                                                GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                                                        .addComponent(label, GroupLayout.PREFERRED_SIZE,
-                                                                113, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(label_1, 0, 0, Short.MAX_VALUE)
+                                                        .addComponent(label, 0, 0, Short.MAX_VALUE)
                                                         .addComponent(lblShift))))
                                 .addContainerGap())
         );
@@ -321,7 +327,7 @@ public class MainWindow extends JFrame {
                 gl_lable.createParallelGroup(Alignment.LEADING)
                         .addGroup(gl_lable.createSequentialGroup()
                                 .addGap(8)
-                                .addComponent(illustration, GroupLayout.PREFERRED_SIZE,
+                                .addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE,
                                         30, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addComponent(label, GroupLayout.PREFERRED_SIZE,
@@ -341,7 +347,30 @@ public class MainWindow extends JFrame {
         //给游戏面板和蛇添加监听器
         gamePanel.addKeyListener(controller);
         snake.addSnakeListener(controller);
+        //开始一个新的线程，用来更新分数
+        controller.startRefresh(new Thread(new refresh()));
         //开始游戏
         controller.beginGame();
+    }
+
+    //创建一个线程让一直刷新分数
+    public class refresh implements Runnable {
+        @Override
+        public void run() {
+            //当蛇活着的时候才进行循环
+            while (!snake.isDie) {
+                if(!snake.isPause()){
+                    controller.timeCountDown();
+                    timeCountDown.setText(controller.getGameTimeSecond() + "/s");
+                    lifeTimes.setText(snake.getLifeCount() + "/times");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
     }
 }

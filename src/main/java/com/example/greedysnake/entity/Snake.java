@@ -1,4 +1,4 @@
-package com.example.greedysnake;
+package com.example.greedysnake.entity;
 
 import com.example.greedysnake.util.Global;
 
@@ -13,14 +13,15 @@ import java.util.Set;
  * @author jzfan
  */
 public class Snake {
-
-    //定义方向变量，用来控制蛇的方向
+    /**
+     * 定义方向变量，用来控制蛇的方向
+     */
     public static final int UP = -1;
     public static final int DOWN = 1;
     public static final int LEFT = 2;
     public static final int RIGHT = -2;
-    /*
-     *    定义一个旧方向，和新方向。用来在改变方向时
+    /**
+     * 定义一个旧方向，和新方向。用来在改变方向时
      * 判断新方向与旧方向是否相同，如果相同则说明
      * 是无效方向，忽略。如果不同方向改变
      */
@@ -34,8 +35,11 @@ public class Snake {
     private Point oldTail;
     private boolean life;
     private boolean pause;
+
     private boolean isPause;
     public boolean isDie;
+
+    public int lifeCount = 3;
     public int speed = 1000;
 
     //存放蛇身体节点坐标
@@ -49,14 +53,15 @@ public class Snake {
     public Snake() {
         init();
     }
-    /*
+
+    /**
      * 初始化蛇的位置，让蛇头出现在游戏界面中心，
      */
     public void init() {
-        int x = Global.WIDTH/ 2 - 3;
-        int y = Global.HEIGHT / 2 ;
+        int x = Global.WIDTH / 2 - 3;
+        int y = Global.HEIGHT / 2;
         //初始化蛇，给蛇添加一个节点
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             body.addLast(new Point(x--, y));
         }
 
@@ -67,7 +72,8 @@ public class Snake {
         isPause = true;
 
     }
-    /*
+
+    /**
      * 蛇移动，先判断新旧方向是否相同，相同则忽略
      * 不同，进行改变方向。蛇移动，通过添加一个头节点，
      * 去除一个最后一个节点，达到移动的目的
@@ -80,7 +86,7 @@ public class Snake {
         oldTail = body.removeLast();
         int x = body.getFirst().x;
         int y = body.getFirst().y;
-        switch(oldDirection) {
+        switch (oldDirection) {
             case UP:
                 y--;
                 //到边上了可以从另一边出现
@@ -109,23 +115,34 @@ public class Snake {
                 break;
 
         }
-        //记录蛇头的坐标
+        // 记录蛇头的坐标
         Point newHead = new Point(x, y);
-        //加头
+        // 加头
         body.addFirst(newHead);
     }
-    //蛇改变方向
+
+
+    /**
+     * 蛇改变方向
+     */
     public void chanceDirection(int direction) {
         newDirection = direction;
 
     }
-    //蛇吃食物
-    public void eatFood() {
+
+
+    /**
+     * 蛇吃食物
+     */
+    public void eatApple() {
         //通过添加删去的最后的尾节点，达到吃食物的目的
         body.addLast(oldTail);
     }
 
-    //判断蛇是否吃到身体
+
+    /**
+     * 判断蛇是否吃到身体
+     */
     public boolean isEatBody() {
         //body.get(0)存放的为蛇头的坐标，
         //所有要排除蛇头，从i=1开始比较
@@ -139,10 +156,10 @@ public class Snake {
 
     /**
      * 获取蛇的snakeBody链表，让食物与蛇身不重叠
-     *        body    表示蛇身体的链表
+     * body    表示蛇身体的链表
      * 返回与蛇身体坐标不重复的坐标
      */
-    public Point getFood(LinkedList<Point> body) {
+    public Point getApple(LinkedList<Point> body) {
         //获得与石头不重叠的坐标
         point = ground.getPoint();
         while (checkPoints(body)) {
@@ -152,13 +169,18 @@ public class Snake {
         return point;
         // 返回这个对象本身，为创建实例时带来方便
     }
-    //获得食物坐标
-    public Point getFoodPoint() {
-        return getFood(body);
+
+
+    /**
+     * 获得食物坐标
+     */
+    public Point getApplePoint() {
+        return getApple(body);
     }
 
     /**
      * 检查蛇身体链表中是否有一块与当前食物坐标相同
+     *
      * @return 如果有重复返回true
      * 否则返回 false
      */
@@ -176,7 +198,7 @@ public class Snake {
 
     //画蛇
     public void drawMe(Graphics g) {
-        for(Point p : body) {
+        for (Point p : body) {
             g.setColor(Color.PINK);//设置身体颜色
             g.fill3DRect(p.x * Global.CELL_SIZE, p.y * Global.CELL_SIZE,
                     Global.CELL_SIZE, Global.CELL_SIZE, true);
@@ -192,25 +214,26 @@ public class Snake {
     public Point getHead() {
         return body.getFirst();
     }
+
     //蛇死亡，生命改为false
     public void die() {
         life = false;
         isDie = true;
     }
 
-    //一个内部类, 驱动蛇定时移动
-    public class SnakerDriver implements Runnable{
+    // 一个内部类, 驱动蛇定时移动
+    public class SnakerDriver implements Runnable {
 
         public void run() {
             //当蛇活着的时候才进行循环
-            while(life) {
+            while (life) {
                 //如果蛇没有暂停才能移动
                 if (!pause) {
                     move();
                     //蛇每次移动后，获得蛇身体总长度
                     getSnakeBodyCount();
                     //触发 SnakeListener 的状态改变事件
-                    for(SnakeListener l : listener) {
+                    for (SnakeListener l : listener) {
                         l.snakeMove(Snake.this);
                     }
                     //让蛇开开始时为暂停状态
@@ -229,14 +252,14 @@ public class Snake {
         }
     }
 
-    //让蛇开始运动， 开启一个新的线程
+    // 让蛇开始运动， 开启一个新的线程
     public void start() {
         new Thread(new SnakerDriver()).start();
     }
 
-    //添加监听器
+    // 添加监听器
     public void addSnakeListener(SnakeListener l) {
-        if(l != null) {
+        if (l != null) {
             this.listener.add(l);
         }
     }
@@ -244,12 +267,40 @@ public class Snake {
     public void getSnakeBodyCount() {
         snakeBodyCount = body.size();
     }
-    //改变蛇暂停状态
+
+    public boolean isPause() {
+        return pause;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+
+    // 改变蛇暂停状态
     public void changePause() {
         pause = !pause;
     }
-    //清除身体所有节点
+
+    public void changePauseByEnter() {
+        if (pause) {
+            pause = !pause;
+        }
+    }
+
+    // 清除身体所有节点
     public void bodyClear() {
         body.clear();
+    }
+
+    public int getLifeCount() {
+        return lifeCount;
+    }
+
+    public void setLifeCount(int lifeCount) {
+        this.lifeCount = lifeCount;
+    }
+
+    public void lifeDesc() {
+        lifeCount--;
     }
 }
